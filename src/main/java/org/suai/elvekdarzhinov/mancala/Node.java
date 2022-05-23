@@ -1,4 +1,4 @@
-package org.suai.mancala;
+package org.suai.elvekdarzhinov.mancala;
 
 import java.util.ArrayList;
 
