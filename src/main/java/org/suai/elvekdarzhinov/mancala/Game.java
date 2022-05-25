@@ -222,14 +222,14 @@ public class Game {
         System.out.print(board[13] + "| ");
 
         for (int i = 7; i < 13; i++) {
-            System.out.print(board[i] + " ");
+            System.out.print("\t" + board[i]);
         }
         System.out.println();
 
         for (int i = 0; i < 6; i++) {
-            System.out.print(board[i] + " ");
+            System.out.print("\t" + board[i]);
         }
-        System.out.println("|" + board[6] + "\n");
+        System.out.println("\t|" + board[6] + "\n");
 
     }
 
