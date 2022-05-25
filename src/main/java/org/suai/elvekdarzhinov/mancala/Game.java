@@ -39,9 +39,6 @@ public class Game {
                 printBoard(computerMove % 7);
 
                 move = scan.nextInt();
-                if (move == 100) { // Manually exit the game
-                    return;
-                }
                 move--;
 
                 while (!checkMove(move)) {
