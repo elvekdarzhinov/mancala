@@ -1,35 +1,28 @@
 package org.suai.elvekdarzhinov.mancala;
 
-import java.util.Random;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Game {
     private static final int PLAYER_KALAH = 6;
     private static final int CMP_KALAH = 13;
 
-    protected int[] board;
-    protected int allStones;
-    protected int moveCount;
-    protected int moveOrder;
+    private final int[] board;
+    private int moveCount;
+    private int moveOrder;
 
     Game(int stones) {
-        this.allStones = stones * 12;
         this.moveCount = 0;
         this.moveOrder = 0;
-
         this.board = new int[14];
-        for (int i = 0; i < 14; i++) {
-            this.board[i] = stones;
-        }
+        Arrays.fill(board, stones);
         board[PLAYER_KALAH] = 0;
         board[CMP_KALAH] = 0;
     }
 
     Game(final Game G) {
-        this.allStones = G.allStones;
         this.moveCount = G.moveCount;
         this.moveOrder = G.moveOrder;
-
         this.board = new int[14];
         System.arraycopy(G.board, 0, this.board, 0, 14);
     }
@@ -61,11 +54,7 @@ public class Game {
             } else {
                 printBoard(move);
 
-                if (treeDepth > 0) {
-                    computerMove = computerMove(treeDepth);
-                } else {
-                    computerMove = randomMove();
-                }
+                computerMove = computerMove(treeDepth);
 
                 makeMove(computerMove);
             }
@@ -103,6 +92,8 @@ public class Game {
             }
         }
 
+        int allStones = playerStones + computerStones + board[PLAYER_KALAH] + board[CMP_KALAH];
+
         if (board[PLAYER_KALAH] > allStones / 2) {
             return 1; // Player wins
         } else if (board[CMP_KALAH] > allStones / 2) {
@@ -122,7 +113,6 @@ public class Game {
         } else if (moveOrder == 1) {
             return move >= 7 && move <= 12 && board[move] != 0;
         }
-
         return true;
     }
 
@@ -140,17 +130,6 @@ public class Game {
         Node gameTreeRoot = Node.makeTree(treeDepth, this, null);
 
         return gameTreeRoot.bestMove();
-    }
-
-    // temporary
-    int randomMove() {
-        Random rand = new Random();
-
-        int move = 7 + (rand.nextInt(6));
-        while (board[move] == 0) {
-            move = 7 + (rand.nextInt(6));
-        }
-        return move;
     }
 
     void doMove(final int move) {
@@ -228,6 +207,18 @@ public class Game {
         }
         System.out.println("\t|" + board[PLAYER_KALAH] + "\n");
 
+    }
+
+    public int getMoveOrder() {
+        return moveOrder;
+    }
+
+    public int getPlayerKalah() {
+        return board[PLAYER_KALAH];
+    }
+
+    public int getCmpKalah() {
+        return board[CMP_KALAH];
     }
 
     public static void makeGame(final int stones, final int moveOrder, final int treeDepth) {

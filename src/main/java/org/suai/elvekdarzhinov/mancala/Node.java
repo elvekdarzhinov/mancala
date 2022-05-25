@@ -74,16 +74,16 @@ public class Node {
 
     void estimate(int treeDepth) {
         if (treeDepth == 0) {
-            this.prelimEstimate = this.curState.board[13] - this.curState.board[6];
-            this.finalEstimate = this.prelimEstimate;
+            prelimEstimate = curState.getCmpKalah() - curState.getPlayerKalah();
+            finalEstimate = prelimEstimate;
             return;
         }
 
-        if (this.children.size() != 0) {
-            if (this.curState.moveOrder == 0) {
-                this.finalEstimate = this.minChild().finalEstimate;
-            } else if (this.curState.moveOrder == 1) {
-                this.finalEstimate = this.maxChild().finalEstimate;
+        if (children.size() != 0) {
+            if (curState.getMoveOrder() == 0) {
+                finalEstimate = minChild().finalEstimate;
+            } else if (curState.getMoveOrder() == 1) {
+                finalEstimate = maxChild().finalEstimate;
             }
         }
     }
@@ -127,7 +127,7 @@ public class Node {
         }
 
         if (treeDepth > 0) {
-            if (N.curState.moveOrder == 0) {
+            if (N.curState.getMoveOrder() == 0) {
                 N.prelimEstimate = 100000;
 
                 for (int i = 0; i < 6; i++) {
@@ -170,8 +170,8 @@ public class Node {
     }
 
     int bestMove() {
-        if (this.children.size() != 0) {
-            if (this.curState.moveOrder == 1) {
+        if (children.size() != 0) {
+            if (curState.getMoveOrder() == 1) {
                 return this.maxChild().prevMove;
             } else {
                 return this.minChild().prevMove;
