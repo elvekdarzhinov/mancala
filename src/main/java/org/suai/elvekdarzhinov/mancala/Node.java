@@ -6,16 +6,16 @@ public class Node {
     Node parent;
     ArrayList<Node> children;
     Game curState;
-    int prelimEstim;
-    int finalEstim;
+    int prelimEstimate;
+    int finalEstimate;
     int prevMove;
 
     Node(final Game G) {
         this.parent = null;
         this.children = new ArrayList<>();
         this.curState = new Game(G);
-        this.prelimEstim = 0;
-        this.finalEstim = 0;
+        this.prelimEstimate = 0;
+        this.finalEstimate = 0;
         this.prevMove = 0;
     }
 
@@ -30,8 +30,8 @@ public class Node {
         int indexOfMax = 0;
 
         for (int i = 0; i < this.children.size(); i++) {
-            if (this.children.get(i).finalEstim > max) {
-                max = this.children.get(i).finalEstim;
+            if (this.children.get(i).finalEstimate > max) {
+                max = this.children.get(i).finalEstimate;
                 indexOfMax = i;
             }
         }
@@ -44,8 +44,8 @@ public class Node {
         int indexOfMin = 0;
 
         for (int i = 0; i < this.children.size(); i++) {
-            if (this.children.get(i).finalEstim < min) {
-                min = this.children.get(i).finalEstim;
+            if (this.children.get(i).finalEstimate < min) {
+                min = this.children.get(i).finalEstimate;
                 indexOfMin = i;
             }
         }
@@ -56,15 +56,15 @@ public class Node {
     boolean estimateEnd() {
         switch (this.curState.checkEnd()) {
             case 1 -> {
-                this.finalEstim = Integer.MIN_VALUE;
+                this.finalEstimate = Integer.MIN_VALUE;
                 return true;
             }
             case 2 -> {
-                this.finalEstim = Integer.MAX_VALUE;
+                this.finalEstimate = Integer.MAX_VALUE;
                 return true;
             }
             case 3 -> {
-                this.finalEstim = 0;
+                this.finalEstimate = 0;
                 return true;
             }
         }
@@ -74,16 +74,16 @@ public class Node {
 
     void estimate(int treeDepth) {
         if (treeDepth == 0) {
-            this.prelimEstim = this.curState.board[13] - this.curState.board[6];
-            this.finalEstim = this.prelimEstim;
+            this.prelimEstimate = this.curState.board[13] - this.curState.board[6];
+            this.finalEstimate = this.prelimEstimate;
             return;
         }
 
         if (this.children.size() != 0) {
             if (this.curState.moveOrder == 0) {
-                this.finalEstim = this.minChild().finalEstim;
+                this.finalEstimate = this.minChild().finalEstimate;
             } else if (this.curState.moveOrder == 1) {
-                this.finalEstim = this.maxChild().finalEstim;
+                this.finalEstimate = this.maxChild().finalEstimate;
             }
         }
     }
@@ -96,20 +96,20 @@ public class Node {
         int numOfChildren = this.children.size();
 
         if (moveOrder == 0 && numOfChildren != 0) {
-            if (this.children.get(numOfChildren - 1).finalEstim < this.prelimEstim) {
-                this.prelimEstim = this.children.get(numOfChildren - 1).finalEstim;
+            if (this.children.get(numOfChildren - 1).finalEstimate < this.prelimEstimate) {
+                this.prelimEstimate = this.children.get(numOfChildren - 1).finalEstimate;
 
-                if (this.prelimEstim <= parentNode.prelimEstim) {
-                    this.finalEstim = this.prelimEstim;
+                if (this.prelimEstimate <= parentNode.prelimEstimate) {
+                    this.finalEstimate = this.prelimEstimate;
                     return true;
                 }
             }
         } else if (moveOrder == 1 && numOfChildren != 0) {
-            if (this.children.get(numOfChildren - 1).finalEstim > this.prelimEstim) {
-                this.prelimEstim = this.children.get(numOfChildren - 1).finalEstim;
+            if (this.children.get(numOfChildren - 1).finalEstimate > this.prelimEstimate) {
+                this.prelimEstimate = this.children.get(numOfChildren - 1).finalEstimate;
 
-                if (this.prelimEstim >= parentNode.prelimEstim) {
-                    this.finalEstim = this.prelimEstim;
+                if (this.prelimEstimate >= parentNode.prelimEstimate) {
+                    this.finalEstimate = this.prelimEstimate;
                     return true;
                 }
             }
@@ -128,7 +128,7 @@ public class Node {
 
         if (treeDepth > 0) {
             if (N.curState.moveOrder == 0) {
-                N.prelimEstim = 100000;
+                N.prelimEstimate = 100000;
 
                 for (int i = 0; i < 6; i++) {
                     Game nextState = new Game(G);
@@ -145,7 +145,7 @@ public class Node {
                     }
                 }
             } else {
-                N.prelimEstim = -100000;
+                N.prelimEstimate = -100000;
 
                 for (int i = 7; i < 13; i++) {
                     Game nextState = new Game(G);
