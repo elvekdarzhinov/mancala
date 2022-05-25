@@ -1,70 +1,68 @@
 package org.suai.elvekdarzhinov.mancala;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Node {
-    Node parent;
-    ArrayList<Node> children;
-    Game curState;
-    int prelimEstimate;
-    int finalEstimate;
-    int prevMove;
+    private final List<Node> children;
+    private final Game curState;
+    private int prelimEstimate;
+    private int finalEstimate;
+    private int prevMove;
 
-    Node(final Game G) {
-        this.parent = null;
-        this.children = new ArrayList<>();
-        this.curState = new Game(G);
-        this.prelimEstimate = 0;
-        this.finalEstimate = 0;
-        this.prevMove = 0;
+    private Node(final Game G) {
+        children = new ArrayList<>();
+        curState = new Game(G);
+        prelimEstimate = 0;
+        finalEstimate = 0;
+        prevMove = 0;
     }
 
-    void addChild(Node N, int move) {
-        this.children.add(N);
-        N.parent = this;
+    private void addChild(Node N, int move) {
+        children.add(N);
         N.prevMove = move;
     }
 
-    Node maxChild() {
+    private Node maxChild() {
         int max = Integer.MIN_VALUE;
         int indexOfMax = 0;
 
-        for (int i = 0; i < this.children.size(); i++) {
-            if (this.children.get(i).finalEstimate > max) {
-                max = this.children.get(i).finalEstimate;
+        for (int i = 0; i < children.size(); i++) {
+            if (children.get(i).finalEstimate > max) {
+                max = children.get(i).finalEstimate;
                 indexOfMax = i;
             }
         }
 
-        return this.children.get(indexOfMax);
+        return children.get(indexOfMax);
     }
 
-    Node minChild() {
+    private Node minChild() {
         int min = Integer.MAX_VALUE;
         int indexOfMin = 0;
 
-        for (int i = 0; i < this.children.size(); i++) {
-            if (this.children.get(i).finalEstimate < min) {
-                min = this.children.get(i).finalEstimate;
+        for (int i = 0; i < children.size(); i++) {
+            if (children.get(i).finalEstimate < min) {
+                min = children.get(i).finalEstimate;
                 indexOfMin = i;
             }
         }
 
-        return this.children.get(indexOfMin);
+        return children.get(indexOfMin);
     }
 
-    boolean estimateEnd() {
-        switch (this.curState.checkEnd()) {
+    private boolean estimateEnd() {
+        switch (curState.checkEnd()) {
             case 1 -> {
-                this.finalEstimate = Integer.MIN_VALUE;
+                finalEstimate = Integer.MIN_VALUE;
                 return true;
             }
             case 2 -> {
-                this.finalEstimate = Integer.MAX_VALUE;
+                finalEstimate = Integer.MAX_VALUE;
                 return true;
             }
             case 3 -> {
-                this.finalEstimate = 0;
+                finalEstimate = 0;
                 return true;
             }
         }
@@ -72,7 +70,7 @@ public class Node {
         return false;
     }
 
-    void estimate(int treeDepth) {
+    private void estimate(int treeDepth) {
         if (treeDepth == 0) {
             prelimEstimate = curState.getCmpKalah() - curState.getPlayerKalah();
             finalEstimate = prelimEstimate;
@@ -88,28 +86,28 @@ public class Node {
         }
     }
 
-    boolean alphaBeta(int moveOrder, Node parentNode) {
+    private boolean alphaBeta(int moveOrder, Node parentNode) {
         if (parentNode == null) {
             return false;
         }
 
-        int numOfChildren = this.children.size();
+        int numOfChildren = children.size();
 
         if (moveOrder == 0 && numOfChildren != 0) {
-            if (this.children.get(numOfChildren - 1).finalEstimate < this.prelimEstimate) {
-                this.prelimEstimate = this.children.get(numOfChildren - 1).finalEstimate;
+            if (children.get(numOfChildren - 1).finalEstimate < prelimEstimate) {
+                prelimEstimate = children.get(numOfChildren - 1).finalEstimate;
 
-                if (this.prelimEstimate <= parentNode.prelimEstimate) {
-                    this.finalEstimate = this.prelimEstimate;
+                if (prelimEstimate <= parentNode.prelimEstimate) {
+                    finalEstimate = prelimEstimate;
                     return true;
                 }
             }
         } else if (moveOrder == 1 && numOfChildren != 0) {
-            if (this.children.get(numOfChildren - 1).finalEstimate > this.prelimEstimate) {
-                this.prelimEstimate = this.children.get(numOfChildren - 1).finalEstimate;
+            if (children.get(numOfChildren - 1).finalEstimate > prelimEstimate) {
+                prelimEstimate = children.get(numOfChildren - 1).finalEstimate;
 
-                if (this.prelimEstimate >= parentNode.prelimEstimate) {
-                    this.finalEstimate = this.prelimEstimate;
+                if (prelimEstimate >= parentNode.prelimEstimate) {
+                    finalEstimate = prelimEstimate;
                     return true;
                 }
             }
@@ -119,7 +117,7 @@ public class Node {
     }
 
 
-    static Node makeTree(final int treeDepth, final Game G, final Node parent) {
+    public static Node makeTree(final int treeDepth, final Game G, final Node parent) {
         Node N = new Node(G);
 
         if (N.estimateEnd()) {
@@ -169,12 +167,12 @@ public class Node {
         return N;
     }
 
-    int bestMove() {
+    public int bestMove() {
         if (children.size() != 0) {
             if (curState.getMoveOrder() == 1) {
-                return this.maxChild().prevMove;
+                return maxChild().prevMove;
             } else {
-                return this.minChild().prevMove;
+                return minChild().prevMove;
             }
         } else {
             return 0;
