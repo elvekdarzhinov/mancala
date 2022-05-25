@@ -2,6 +2,6 @@ package org.suai.elvekdarzhinov.mancala;
 
 public class Main {
     public static void main(String[] args) {
-        Game.makeGame(4, 0, 10);
+        new Game(4).runGame(10, 0);
     }
 }

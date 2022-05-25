@@ -11,7 +11,7 @@ public class Game {
     private int moveCount;
     private int moveOrder;
 
-    Game(int stones) {
+    public Game(int stones) {
         this.moveCount = 0;
         this.moveOrder = 0;
         this.board = new int[14];
@@ -20,14 +20,14 @@ public class Game {
         board[CMP_KALAH] = 0;
     }
 
-    Game(final Game G) {
+    public Game(final Game G) {
         this.moveCount = G.moveCount;
         this.moveOrder = G.moveOrder;
         this.board = new int[14];
         System.arraycopy(G.board, 0, this.board, 0, 14);
     }
 
-    void runGame(int treeDepth, int firstMove) {
+    public void runGame(int treeDepth, int firstMove) {
         moveOrder = firstMove;
 
         int move = 0;
@@ -68,7 +68,7 @@ public class Game {
         printResult();
     }
 
-    int checkEnd() {
+    public int checkEnd() {
         int playerStones = 0;
         int computerStones = 0;
 
@@ -104,7 +104,7 @@ public class Game {
         return 0; // Move is possible
     }
 
-    boolean checkMove(final int move) {
+    public boolean checkMove(final int move) {
         if (moveOrder == 0) {
             return move >= 0 && move <= 5 && board[move] != 0;
         } else if (moveOrder == 1) {
@@ -113,7 +113,7 @@ public class Game {
         return true;
     }
 
-    void printResult() {
+    private void printResult() {
         int result = checkEnd();
 
         switch (result) {
@@ -123,13 +123,13 @@ public class Game {
         }
     }
 
-    int computerMove(int treeDepth) {
+    private int computerMove(int treeDepth) {
         Node gameTreeRoot = Node.makeTree(treeDepth, this, null);
 
         return gameTreeRoot.bestMove();
     }
 
-    void doMove(final int move) {
+    private void doMove(final int move) {
         boolean beenOnOtherSide = false;
         int curHole = 0;
 
@@ -168,13 +168,13 @@ public class Game {
         }
     }
 
-    void makeMove(final int move) {
+    public void makeMove(final int move) {
         doMove(move);
         moveCount++;
         moveOrder = (moveOrder + 1) % 2;
     }
 
-    void printBoard(final int prevMove) {
+    private void printBoard(final int prevMove) {
         System.out.println("Move count: " + moveCount);
 
         System.out.print("Previous move: ");
@@ -216,10 +216,5 @@ public class Game {
 
     public int getCmpKalah() {
         return board[CMP_KALAH];
-    }
-
-    public static void makeGame(final int stones, final int moveOrder, final int treeDepth) {
-        Game G = new Game(stones);
-        G.runGame(treeDepth, moveOrder);
     }
 }
