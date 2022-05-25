@@ -4,12 +4,15 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+    private static final int PLAYER_KALAH = 6;
+    private static final int CMP_KALAH = 13;
+
     protected int[] board;
     protected int allStones;
     protected int moveCount;
     protected int moveOrder;
 
-    Game(final int stones) {
+    Game(int stones) {
         this.allStones = stones * 12;
         this.moveCount = 0;
         this.moveOrder = 0;
@@ -18,8 +21,8 @@ public class Game {
         for (int i = 0; i < 14; i++) {
             this.board[i] = stones;
         }
-        board[6] = 0;
-        board[13] = 0;
+        board[PLAYER_KALAH] = 0;
+        board[CMP_KALAH] = 0;
     }
 
     Game(final Game G) {
@@ -64,15 +67,9 @@ public class Game {
                     computerMove = randomMove();
                 }
 
-                //std::cin.get();
-                //std::cin.get();
-
                 makeMove(computerMove);
             }
         }
-
-        scan.close();
-
 
         if (moveOrder == 0) {
             moveOrder = 3;
@@ -89,30 +86,30 @@ public class Game {
         int playerStones = 0;
         int computerStones = 0;
 
-        for (int i = 0, j = 7; i < 6; i++, j++) {
+        for (int i = 0, j = 7; i < PLAYER_KALAH; i++, j++) {
             playerStones += board[i];
             computerStones += board[j];
         }
 
         if (playerStones == 0) {
-            board[13] += computerStones;
-            for (int i = 7; i < 13; i++) {
+            board[CMP_KALAH] += computerStones;
+            for (int i = 7; i < CMP_KALAH; i++) {
                 board[i] = 0;
             }
         } else if (computerStones == 0) {
-            board[6] += playerStones;
-            for (int i = 0; i < 6; i++) {
+            board[PLAYER_KALAH] += playerStones;
+            for (int i = 0; i < PLAYER_KALAH; i++) {
                 board[i] = 0;
             }
         }
 
-        if (board[6] > allStones / 2) {
+        if (board[PLAYER_KALAH] > allStones / 2) {
             return 1; // Player wins
-        } else if (board[13] > allStones / 2) {
+        } else if (board[CMP_KALAH] > allStones / 2) {
             return 2; // CMP wins
         }
 
-        if ((board[6] == allStones / 2) && (board[13] == allStones / 2)) {
+        if ((board[PLAYER_KALAH] == allStones / 2) && (board[CMP_KALAH] == allStones / 2)) {
             return 3; // TIE
         }
 
@@ -162,8 +159,8 @@ public class Game {
 
         for (int i = 1; i < board[move] + 1; i++) {
             curHole = (move + i) % 14;
-            if ((moveOrder == 0 && curHole != 13) || (moveOrder == 1 && curHole != 6)) {
-                if ((moveOrder == 0 && curHole > 6) || (moveOrder == 1 && curHole < 6)) {
+            if ((moveOrder == 0 && curHole != CMP_KALAH) || (moveOrder == 1 && curHole != PLAYER_KALAH)) {
+                if ((moveOrder == 0 && curHole > PLAYER_KALAH) || (moveOrder == 1 && curHole < PLAYER_KALAH)) {
                     beenOnOtherSide = true;
                 }
                 board[curHole] += 1;
@@ -174,21 +171,21 @@ public class Game {
         board[move] = 0;
 
         if (board[curHole] != 0) {
-            if (beenOnOtherSide && ((moveOrder == 0 && curHole < 6) || (moveOrder == 1 && curHole > 6 && curHole < 13))) {
+            if (beenOnOtherSide && ((moveOrder == 0 && curHole < PLAYER_KALAH) || (moveOrder == 1 && curHole > PLAYER_KALAH && curHole < CMP_KALAH))) {
                 doMove(curHole); // additional move
             }
         }
 
         if (moveOrder == 0) {
-            while (curHole > 6 && curHole < 13 && (board[curHole] == 2 || board[curHole] == 3)) {
-                board[6] += board[curHole];
+            while (curHole > PLAYER_KALAH && curHole < CMP_KALAH && (board[curHole] == 2 || board[curHole] == 3)) {
+                board[PLAYER_KALAH] += board[curHole];
                 board[curHole] = 0;
                 board[curHole] = 0;
                 curHole--;
             }
         } else if (moveOrder == 1) {
-            while (curHole >= 0 && curHole < 6 && (board[curHole] == 2 || board[curHole] == 3)) {
-                board[13] += board[curHole];
+            while (curHole >= 0 && curHole < PLAYER_KALAH && (board[curHole] == 2 || board[curHole] == 3)) {
+                board[CMP_KALAH] += board[curHole];
                 board[curHole] = 0;
                 curHole--;
             }
@@ -219,17 +216,17 @@ public class Game {
             System.out.println("\n");
         }
 
-        System.out.print(board[13] + "| ");
+        System.out.print(board[CMP_KALAH] + "| ");
 
-        for (int i = 7; i < 13; i++) {
+        for (int i = 7; i < CMP_KALAH; i++) {
             System.out.print("\t" + board[i]);
         }
         System.out.println();
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < PLAYER_KALAH; i++) {
             System.out.print("\t" + board[i]);
         }
-        System.out.println("\t|" + board[6] + "\n");
+        System.out.println("\t|" + board[PLAYER_KALAH] + "\n");
 
     }
 
