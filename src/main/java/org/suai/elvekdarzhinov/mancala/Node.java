@@ -10,17 +10,17 @@ public class Node {
     private int finalEstimate;
     private int prevMove;
 
-    private Node(Game G) {
+    private Node(Game game) {
         children = new ArrayList<>();
-        curState = new Game(G);
+        curState = new Game(game);
         prelimEstimate = 0;
         finalEstimate = 0;
         prevMove = 0;
     }
 
-    private void addChild(Node N, int move) {
-        children.add(N);
-        N.prevMove = move;
+    private void addChild(Node node, int move) {
+        children.add(node);
+        node.prevMove = move;
     }
 
     private Node maxChild() {
@@ -117,44 +117,44 @@ public class Node {
     }
 
 
-    public static Node makeTree(int treeDepth, Game G, Node parent) {
-        Node N = new Node(G);
+    public static Node makeTree(int treeDepth, Game game, Node parent) {
+        Node node = new Node(game);
 
-        if (N.estimateEnd()) {
-            return N;
+        if (node.estimateEnd()) {
+            return node;
         }
 
         if (treeDepth > 0) {
-            if (N.curState.getMoveOrder() == Game.MoveOrder.PLAYER) {
-                N.prelimEstimate = 100000;
+            if (node.curState.getMoveOrder() == Game.MoveOrder.PLAYER) {
+                node.prelimEstimate = 100000;
 
                 for (int i = 0; i < 6; i++) {
-                    Game nextState = new Game(G);
+                    Game nextState = new Game(game);
 
                     if (nextState.checkMove(i)) {
                         nextState.makeMove(i);
-                        N.addChild(makeTree(treeDepth - 1, nextState, N), i);
+                        node.addChild(makeTree(treeDepth - 1, nextState, node), i);
 
                         if (treeDepth > 1) {
-                            if (N.alphaBeta(0, parent)) {
-                                return N;
+                            if (node.alphaBeta(0, parent)) {
+                                return node;
                             }
                         }
                     }
                 }
             } else {
-                N.prelimEstimate = -100000;
+                node.prelimEstimate = -100000;
 
                 for (int i = 7; i < 13; i++) {
-                    Game nextState = new Game(G);
+                    Game nextState = new Game(game);
 
                     if (nextState.checkMove(i)) {
                         nextState.makeMove(i);
-                        N.addChild(makeTree(treeDepth - 1, nextState, N), i);
+                        node.addChild(makeTree(treeDepth - 1, nextState, node), i);
 
                         if (treeDepth > 1) {
-                            if (N.alphaBeta(1, parent)) {
-                                return N;
+                            if (node.alphaBeta(1, parent)) {
+                                return node;
                             }
                         }
                     }
@@ -162,9 +162,9 @@ public class Node {
             }
         }
 
-        N.estimate(treeDepth);
+        node.estimate(treeDepth);
 
-        return N;
+        return node;
     }
 
     public int bestMove() {
