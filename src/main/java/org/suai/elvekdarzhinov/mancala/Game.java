@@ -34,7 +34,7 @@ public class Game {
         int computerMove = 0;
         Scanner scan = new Scanner(System.in);
 
-        while (checkEnd() == 0) {
+        while (checkEnd() == Ending.NOT_FINISHED) {
             if (moveOrder == MoveOrder.PLAYER) {
                 System.out.println(log(computerMove % 7));
 
@@ -65,10 +65,10 @@ public class Game {
             System.out.println(log(move));
         }
 
-        printResult();
+        System.out.println(printResult());
     }
 
-    public int checkEnd() {
+    public Ending checkEnd() {
         int playerStones = 0;
         int computerStones = 0;
 
@@ -92,16 +92,16 @@ public class Game {
         int allStones = playerStones + computerStones + board[PLAYER_KALAH] + board[CMP_KALAH];
 
         if (board[PLAYER_KALAH] > allStones / 2) {
-            return 1; // Player wins
+            return Ending.PLAYER_WINS;
         } else if (board[CMP_KALAH] > allStones / 2) {
-            return 2; // CMP wins
+            return Ending.CMP_WINS;
         }
 
         if ((board[PLAYER_KALAH] == allStones / 2) && (board[CMP_KALAH] == allStones / 2)) {
-            return 3; // TIE
+            return Ending.TIE;
         }
 
-        return 0; // Move is possible
+        return Ending.NOT_FINISHED;
     }
 
     public boolean checkMove(int move) {
@@ -113,14 +113,8 @@ public class Game {
         return true;
     }
 
-    private void printResult() {
-        int result = checkEnd();
-
-        switch (result) {
-            case 1 -> System.out.println("YOU WIN!");
-            case 2 -> System.out.println("YOU LOSE!");
-            case 3 -> System.out.println("TIE!");
-        }
+    private String printResult() {
+        return checkEnd().toString();
     }
 
     private int computerMove(int treeDepth) {
@@ -233,5 +227,9 @@ public class Game {
         public MoveOrder opposite() {
             return this == PLAYER ? COMPUTER : PLAYER;
         }
+    }
+
+    public enum Ending {
+        PLAYER_WINS, CMP_WINS, TIE, NOT_FINISHED
     }
 }
