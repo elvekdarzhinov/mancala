@@ -60,15 +60,15 @@ public class GameTree {
 
         boolean estimateEnd() {
             switch (curState.checkEnd()) {
-                case 1 -> {
+                case PLAYER_WINS -> {
                     finalEstimate = Integer.MIN_VALUE;
                     return true;
                 }
-                case 2 -> {
+                case CMP_WINS -> {
                     finalEstimate = Integer.MAX_VALUE;
                     return true;
                 }
-                case 3 -> {
+                case TIE -> {
                     finalEstimate = 0;
                     return true;
                 }
