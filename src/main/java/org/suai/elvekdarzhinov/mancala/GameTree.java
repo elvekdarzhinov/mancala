@@ -72,9 +72,10 @@ public class GameTree {
                     finalEstimate = 0;
                     return true;
                 }
+                default -> {
+                    return false;
+                }
             }
-
-            return false;
         }
 
         void estimate(int treeDepth) {
