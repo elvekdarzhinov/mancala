@@ -135,8 +135,10 @@ public class Game {
 
         for (int i = 1; i < board[move] + 1; i++) {
             curHole = (move + i) % 14;
-            if ((moveOrder == MoveOrder.PLAYER && curHole != CMP_KALAH) || (moveOrder == MoveOrder.COMPUTER && curHole != PLAYER_KALAH)) {
-                if ((moveOrder == MoveOrder.PLAYER && curHole > PLAYER_KALAH) || (moveOrder == MoveOrder.COMPUTER && curHole < PLAYER_KALAH)) {
+            if ((moveOrder == MoveOrder.PLAYER && curHole != CMP_KALAH) ||
+                    (moveOrder == MoveOrder.COMPUTER && curHole != PLAYER_KALAH)) {
+                if ((moveOrder == MoveOrder.PLAYER && curHole > PLAYER_KALAH) ||
+                        (moveOrder == MoveOrder.COMPUTER && curHole < PLAYER_KALAH)) {
                     beenOnOtherSide = true;
                 }
                 board[curHole] += 1;
@@ -147,20 +149,28 @@ public class Game {
         board[move] = 0;
 
         if (board[curHole] != 0) {
-            if (beenOnOtherSide && ((moveOrder == MoveOrder.PLAYER && curHole < PLAYER_KALAH) || (moveOrder == MoveOrder.COMPUTER && curHole > PLAYER_KALAH && curHole < CMP_KALAH))) {
+            if (beenOnOtherSide &&
+                    ((moveOrder == MoveOrder.PLAYER && curHole < PLAYER_KALAH) ||
+                            (moveOrder == MoveOrder.COMPUTER &&
+                                    curHole > PLAYER_KALAH &&
+                                    curHole < CMP_KALAH))) {
                 doMove(curHole); // additional move
             }
         }
 
         if (moveOrder == MoveOrder.PLAYER) {
-            while (curHole > PLAYER_KALAH && curHole < CMP_KALAH && (board[curHole] == 2 || board[curHole] == 3)) {
+            while (curHole > PLAYER_KALAH &&
+                    curHole < CMP_KALAH &&
+                    (board[curHole] == 2 || board[curHole] == 3)) {
                 board[PLAYER_KALAH] += board[curHole];
                 board[curHole] = 0;
                 board[curHole] = 0;
                 curHole--;
             }
         } else if (moveOrder == MoveOrder.COMPUTER) {
-            while (curHole >= 0 && curHole < PLAYER_KALAH && (board[curHole] == 2 || board[curHole] == 3)) {
+            while (curHole >= 0 &&
+                    curHole < PLAYER_KALAH &&
+                    (board[curHole] == 2 || board[curHole] == 3)) {
                 board[CMP_KALAH] += board[curHole];
                 board[curHole] = 0;
                 curHole--;
