@@ -126,7 +126,7 @@ public class Node {
 
         if (treeDepth > 0) {
             if (node.curState.getMoveOrder() == Game.MoveOrder.PLAYER) {
-                node.prelimEstimate = 100000;
+                node.prelimEstimate = Integer.MAX_VALUE;
 
                 for (int i = 0; i < 6; i++) {
                     Game nextState = new Game(game);
@@ -143,7 +143,7 @@ public class Node {
                     }
                 }
             } else {
-                node.prelimEstimate = -100000;
+                node.prelimEstimate = Integer.MIN_VALUE;
 
                 for (int i = 7; i < 13; i++) {
                     Game nextState = new Game(game);
