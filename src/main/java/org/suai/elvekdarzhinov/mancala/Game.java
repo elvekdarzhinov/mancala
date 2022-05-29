@@ -124,9 +124,7 @@ public class Game {
     }
 
     private int computerMove(int treeDepth) {
-        Node gameTreeRoot = Node.makeTree(treeDepth, this, null);
-
-        return gameTreeRoot.bestMove();
+        return GameTree.generateMove(treeDepth, this);
     }
 
     private void doMove(int move) {
@@ -195,7 +193,7 @@ public class Game {
         }
 
         if (moveOrder == MoveOrder.PLAYER) {
-            System.out.println("YOUR MOVE:\n");
+            System.out.println("YOUR MOVE:");
         } else if (moveOrder == MoveOrder.COMPUTER) {
             System.out.println("COMPUTER MOVE:\n");
         } else {
@@ -213,7 +211,6 @@ public class Game {
             System.out.print("\t" + board[i]);
         }
         System.out.println("\t|" + board[PLAYER_KALAH] + "\n");
-
     }
 
     public MoveOrder getMoveOrder() {
