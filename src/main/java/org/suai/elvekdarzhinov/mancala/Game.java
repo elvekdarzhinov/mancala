@@ -36,7 +36,7 @@ public class Game {
 
         while (checkEnd() == 0) {
             if (moveOrder == MoveOrder.PLAYER) {
-                printBoard(computerMove % 7);
+                System.out.println(log(computerMove % 7));
 
                 move = scan.nextInt();
                 move--;
@@ -49,7 +49,7 @@ public class Game {
 
                 makeMove(move);
             } else {
-                printBoard(move);
+                System.out.println(log(move));
 
                 computerMove = computerMove(treeDepth);
 
@@ -59,10 +59,10 @@ public class Game {
 
         if (moveOrder == MoveOrder.PLAYER) {
             moveOrder = MoveOrder.SPECIAL;
-            printBoard(computerMove % 7);
+            System.out.println(log(computerMove % 7));
         } else {
             moveOrder = MoveOrder.SPECIAL;
-            printBoard(move);
+            System.out.println(log(move));
         }
 
         printResult();
@@ -182,35 +182,37 @@ public class Game {
         moveOrder = moveOrder.opposite();
     }
 
-    private void printBoard(int prevMove) {
-        System.out.println("Move count: " + moveCount);
+    private String log(int prevMove) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Move count: ").append(moveCount).append(System.lineSeparator());
 
-        System.out.print("Previous move: ");
+        sb.append("Previous move: ");
         if (moveCount != 0) {
-            System.out.println(prevMove + 1);
+            sb.append(prevMove + 1).append(System.lineSeparator());
         } else {
-            System.out.println("-");
+            sb.append("-").append(System.lineSeparator());
         }
 
         if (moveOrder == MoveOrder.PLAYER) {
-            System.out.println("YOUR MOVE:");
+            sb.append("YOUR MOVE:");
         } else if (moveOrder == MoveOrder.COMPUTER) {
-            System.out.println("COMPUTER MOVE:\n");
-        } else {
-            System.out.println("\n");
+            sb.append("COMPUTER MOVE:");
         }
+        sb.append(System.lineSeparator());
 
-        System.out.print(board[CMP_KALAH] + "| ");
+        sb.append(board[CMP_KALAH]).append("| ");
 
         for (int i = 7; i < CMP_KALAH; i++) {
-            System.out.print("\t" + board[i]);
+            sb.append("\t").append(board[i]);
         }
-        System.out.println();
+        sb.append(System.lineSeparator());
 
         for (int i = 0; i < PLAYER_KALAH; i++) {
-            System.out.print("\t" + board[i]);
+            sb.append("\t").append(board[i]);
         }
-        System.out.println("\t|" + board[PLAYER_KALAH] + "\n");
+        sb.append("\t|").append(board[PLAYER_KALAH]).append("\n");
+
+        return sb.toString();
     }
 
     public MoveOrder getMoveOrder() {
