@@ -9,25 +9,25 @@ public class Game {
 
     private final int[] board;
     private int moveCount;
-    private int moveOrder;
+    private MoveOrder moveOrder;
 
     public Game(int stones) {
         this.moveCount = 0;
-        this.moveOrder = 0;
+        this.moveOrder = MoveOrder.PLAYER;
         this.board = new int[14];
         Arrays.fill(board, stones);
         board[PLAYER_KALAH] = 0;
         board[CMP_KALAH] = 0;
     }
 
-    public Game(final Game G) {
+    public Game(Game G) {
         this.moveCount = G.moveCount;
         this.moveOrder = G.moveOrder;
         this.board = new int[14];
         System.arraycopy(G.board, 0, this.board, 0, 14);
     }
 
-    public void runGame(int treeDepth, int firstMove) {
+    public void runGame(int treeDepth, MoveOrder firstMove) {
         moveOrder = firstMove;
 
         int move = 0;
@@ -35,7 +35,7 @@ public class Game {
         Scanner scan = new Scanner(System.in);
 
         while (checkEnd() == 0) {
-            if (moveOrder == 0) {
+            if (moveOrder == MoveOrder.PLAYER) {
                 printBoard(computerMove % 7);
 
                 move = scan.nextInt();
@@ -57,11 +57,11 @@ public class Game {
             }
         }
 
-        if (moveOrder == 0) {
-            moveOrder = 3;
+        if (moveOrder == MoveOrder.PLAYER) {
+            moveOrder = MoveOrder.SPECIAL;
             printBoard(computerMove % 7);
         } else {
-            moveOrder = 3;
+            moveOrder = MoveOrder.SPECIAL;
             printBoard(move);
         }
 
@@ -104,10 +104,10 @@ public class Game {
         return 0; // Move is possible
     }
 
-    public boolean checkMove(final int move) {
-        if (moveOrder == 0) {
+    public boolean checkMove(int move) {
+        if (moveOrder == MoveOrder.PLAYER) {
             return move >= 0 && move <= 5 && board[move] != 0;
-        } else if (moveOrder == 1) {
+        } else if (moveOrder == MoveOrder.COMPUTER) {
             return move >= 7 && move <= 12 && board[move] != 0;
         }
         return true;
@@ -129,14 +129,14 @@ public class Game {
         return gameTreeRoot.bestMove();
     }
 
-    private void doMove(final int move) {
+    private void doMove(int move) {
         boolean beenOnOtherSide = false;
         int curHole = 0;
 
         for (int i = 1; i < board[move] + 1; i++) {
             curHole = (move + i) % 14;
-            if ((moveOrder == 0 && curHole != CMP_KALAH) || (moveOrder == 1 && curHole != PLAYER_KALAH)) {
-                if ((moveOrder == 0 && curHole > PLAYER_KALAH) || (moveOrder == 1 && curHole < PLAYER_KALAH)) {
+            if ((moveOrder == MoveOrder.PLAYER && curHole != CMP_KALAH) || (moveOrder == MoveOrder.COMPUTER && curHole != PLAYER_KALAH)) {
+                if ((moveOrder == MoveOrder.PLAYER && curHole > PLAYER_KALAH) || (moveOrder == MoveOrder.COMPUTER && curHole < PLAYER_KALAH)) {
                     beenOnOtherSide = true;
                 }
                 board[curHole] += 1;
@@ -147,19 +147,19 @@ public class Game {
         board[move] = 0;
 
         if (board[curHole] != 0) {
-            if (beenOnOtherSide && ((moveOrder == 0 && curHole < PLAYER_KALAH) || (moveOrder == 1 && curHole > PLAYER_KALAH && curHole < CMP_KALAH))) {
+            if (beenOnOtherSide && ((moveOrder == MoveOrder.PLAYER && curHole < PLAYER_KALAH) || (moveOrder == MoveOrder.COMPUTER && curHole > PLAYER_KALAH && curHole < CMP_KALAH))) {
                 doMove(curHole); // additional move
             }
         }
 
-        if (moveOrder == 0) {
+        if (moveOrder == MoveOrder.PLAYER) {
             while (curHole > PLAYER_KALAH && curHole < CMP_KALAH && (board[curHole] == 2 || board[curHole] == 3)) {
                 board[PLAYER_KALAH] += board[curHole];
                 board[curHole] = 0;
                 board[curHole] = 0;
                 curHole--;
             }
-        } else if (moveOrder == 1) {
+        } else if (moveOrder == MoveOrder.COMPUTER) {
             while (curHole >= 0 && curHole < PLAYER_KALAH && (board[curHole] == 2 || board[curHole] == 3)) {
                 board[CMP_KALAH] += board[curHole];
                 board[curHole] = 0;
@@ -168,13 +168,13 @@ public class Game {
         }
     }
 
-    public void makeMove(final int move) {
+    public void makeMove(int move) {
         doMove(move);
         moveCount++;
-        moveOrder = (moveOrder + 1) % 2;
+        moveOrder = moveOrder.opposite();
     }
 
-    private void printBoard(final int prevMove) {
+    private void printBoard(int prevMove) {
         System.out.println("Move count: " + moveCount);
 
         System.out.print("Previous move: ");
@@ -184,9 +184,9 @@ public class Game {
             System.out.println("-");
         }
 
-        if (moveOrder == 0) {
+        if (moveOrder == MoveOrder.PLAYER) {
             System.out.println("YOUR MOVE:\n");
-        } else if (moveOrder == 1) {
+        } else if (moveOrder == MoveOrder.COMPUTER) {
             System.out.println("COMPUTER MOVE:\n");
         } else {
             System.out.println("\n");
@@ -206,7 +206,7 @@ public class Game {
 
     }
 
-    public int getMoveOrder() {
+    public MoveOrder getMoveOrder() {
         return moveOrder;
     }
 
@@ -216,5 +216,13 @@ public class Game {
 
     public int getCmpKalah() {
         return board[CMP_KALAH];
+    }
+
+    public enum MoveOrder {
+        PLAYER, COMPUTER, SPECIAL;
+
+        public MoveOrder opposite() {
+            return this == PLAYER ? COMPUTER : PLAYER;
+        }
     }
 }

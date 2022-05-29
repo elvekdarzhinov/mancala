@@ -10,7 +10,7 @@ public class Node {
     private int finalEstimate;
     private int prevMove;
 
-    private Node(final Game G) {
+    private Node(Game G) {
         children = new ArrayList<>();
         curState = new Game(G);
         prelimEstimate = 0;
@@ -78,9 +78,9 @@ public class Node {
         }
 
         if (children.size() != 0) {
-            if (curState.getMoveOrder() == 0) {
+            if (curState.getMoveOrder() == Game.MoveOrder.PLAYER) {
                 finalEstimate = minChild().finalEstimate;
-            } else if (curState.getMoveOrder() == 1) {
+            } else if (curState.getMoveOrder() == Game.MoveOrder.COMPUTER) {
                 finalEstimate = maxChild().finalEstimate;
             }
         }
@@ -117,7 +117,7 @@ public class Node {
     }
 
 
-    public static Node makeTree(final int treeDepth, final Game G, final Node parent) {
+    public static Node makeTree(int treeDepth, Game G, Node parent) {
         Node N = new Node(G);
 
         if (N.estimateEnd()) {
@@ -125,7 +125,7 @@ public class Node {
         }
 
         if (treeDepth > 0) {
-            if (N.curState.getMoveOrder() == 0) {
+            if (N.curState.getMoveOrder() == Game.MoveOrder.PLAYER) {
                 N.prelimEstimate = 100000;
 
                 for (int i = 0; i < 6; i++) {
@@ -169,7 +169,7 @@ public class Node {
 
     public int bestMove() {
         if (children.size() != 0) {
-            if (curState.getMoveOrder() == 1) {
+            if (curState.getMoveOrder() == Game.MoveOrder.COMPUTER) {
                 return maxChild().prevMove;
             } else {
                 return minChild().prevMove;
